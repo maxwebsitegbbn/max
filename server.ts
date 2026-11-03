@@ -35,9 +35,9 @@ const fallbackPackyData = {
   trial: {
     targetTrial: 2000,
     targetRaise: 4000,
-    totalWagered: 2060.90,
+    totalWagered: 0,
     daysLeft: 10,
-    trialStatus: "2-Week Trial: $2,000 Milestone Reached! ($4,000 for potential raise)"
+    trialStatus: "Packy Leaderboard Race Active"
   },
   vipTransfer: {
     depositBonus: "10% weekly deposit bonus",
@@ -48,23 +48,7 @@ const fallbackPackyData = {
   },
   endsAt: Date.now() + 10 * 86400 * 1000 + 4 * 3600 * 1000,
   live: true,
-  players: [
-    { rank: 1, name: "Ch****99", wagered: 940.50, prize: 50, avatar: null },
-    { rank: 2, name: "Pk****77", wagered: 520.10, prize: 30, avatar: null },
-    { rank: 3, name: "Lu****X1", wagered: 245.80, prize: 20, avatar: null },
-    { rank: 4, name: "Ge****bz", wagered: 138.80, prize: 0, avatar: null },
-    { rank: 5, name: "As****01", wagered: 92.50, prize: 0, avatar: null },
-    { rank: 6, name: "Ry****gg", wagered: 64.20, prize: 0, avatar: null },
-    { rank: 7, name: "Bl****pk", wagered: 45.00, prize: 0, avatar: null },
-    { rank: 8, name: "Ve****08", wagered: 32.50, prize: 0, avatar: null },
-    { rank: 9, name: "Sn****22", wagered: 24.00, prize: 0, avatar: null },
-    { rank: 10, name: "Pi****55", wagered: 18.00, prize: 0, avatar: null },
-    { rank: 11, name: "Me****90", wagered: 14.50, prize: 0, avatar: null },
-    { rank: 12, name: "Dr****33", wagered: 11.20, prize: 0, avatar: null },
-    { rank: 13, name: "To****10", wagered: 8.40, prize: 0, avatar: null },
-    { rank: 14, name: "Ka****64", wagered: 6.00, prize: 0, avatar: null },
-    { rank: 15, name: "Um****07", wagered: 4.80, prize: 0, avatar: null }
-  ]
+  players: [] as any[]
 };
 
 // Endpoint 2 — Leaderboards (from Packy.gg Creator Partner API)
@@ -75,146 +59,242 @@ app.get("/api/packy/leaderboard", async (req: Request, res: Response) => {
     return res.json(cachedBoard);
   }
 
+  let lastError: any = null;
+
   try {
-    const endpoint = `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`;
+    const candidateEndpoints = [
+      `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
+      `${PACKY_BASE_URL}/api/v1/affiliate/leaderboard/external`
+    ];
+
     const headers: Record<string, string> = {
       "Accept": "application/json",
-      "User-Agent": "MAX-Degens-Leaderboard/1.0",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       "X-API-Key": PACKY_API_KEY,
-      "x-api-key": PACKY_API_KEY
+      "x-api-key": PACKY_API_KEY,
+      "Authorization": `Bearer ${PACKY_API_KEY}`,
+      "api-key": PACKY_API_KEY
     };
 
     if (PACKY_CUSTOM_KEY) {
       headers["x-custom-key"] = PACKY_CUSTOM_KEY;
+      headers["X-Custom-Key"] = PACKY_CUSTOM_KEY;
     }
 
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers,
-      signal: AbortSignal.timeout(6000)
-    });
+    for (const endpoint of candidateEndpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers,
+          signal: AbortSignal.timeout(6500)
+        });
 
-    if (response.ok) {
-      const contentType = response.headers.get("content-type") || "";
-      if (contentType.includes("application/json")) {
-        const json = await response.json();
-        const leaderboards = json?.data?.leaderboards;
+        if (response.ok) {
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const json = await response.json();
+            const leaderboards = json?.data?.leaderboards;
 
-        if (json?.success && Array.isArray(leaderboards) && leaderboards.length > 0) {
-          // Find the active event, or upcoming, or most recent approved leaderboard
-          const activeBoard =
-            leaderboards.find((b: any) => b.time_status === "active") ||
-            leaderboards.find((b: any) => b.time_status === "upcoming") ||
-            leaderboards[0];
+            if (json?.success && Array.isArray(leaderboards)) {
+              // If there are no approved leaderboards yet
+              if (leaderboards.length === 0) {
+                cachedBoard = {
+                  ...fallbackPackyData,
+                  site: "packy",
+                  name: "packy.gg",
+                  live: false,
+                  players: [],
+                  source: "live-empty",
+                  status: "no_active_leaderboard",
+                  message: "No approved leaderboard event found on Packy.gg for this account yet."
+                };
+                lastFetchTime = now;
+                return res.json(cachedBoard);
+              }
 
-          if (activeBoard) {
-            const prizePool =
-              parseFloat(activeBoard.total_prize_usd) ||
-              parseFloat(activeBoard.creator_prize_usd) ||
-              fallbackPackyData.pool;
+              // Find active race, or upcoming, or most recent approved leaderboard
+              const activeBoard =
+                leaderboards.find((b: any) => b.time_status === "active") ||
+                leaderboards.find((b: any) => b.time_status === "upcoming") ||
+                leaderboards[0];
 
-            const parsedEndsAt = activeBoard.end_date
-              ? new Date(activeBoard.end_date).getTime()
-              : NaN;
-            const endsAt =
-              !isNaN(parsedEndsAt) && parsedEndsAt > 0
-                ? parsedEndsAt
-                : fallbackPackyData.endsAt;
+              if (activeBoard) {
+                const prizePool =
+                  parseFloat(activeBoard.total_prize_usd) ||
+                  parseFloat(activeBoard.creator_prize_usd) ||
+                  fallbackPackyData.pool;
 
-            // Build prize lookup by position
-            const prizeMap: Record<number, number> = {};
-            if (Array.isArray(activeBoard.prize_tiers)) {
-              for (const tier of activeBoard.prize_tiers) {
-                prizeMap[Number(tier.position)] = parseFloat(tier.prize_amount_usd) || 0;
+                const parsedEndsAt = activeBoard.end_date
+                  ? new Date(activeBoard.end_date).getTime()
+                  : NaN;
+                const endsAt =
+                  !isNaN(parsedEndsAt) && parsedEndsAt > 0
+                    ? parsedEndsAt
+                    : fallbackPackyData.endsAt;
+
+                // Build prize lookup by position from custom prize_tiers
+                const prizeMap: Record<number, number> = {};
+                if (Array.isArray(activeBoard.prize_tiers)) {
+                  for (const tier of activeBoard.prize_tiers) {
+                    prizeMap[Number(tier.position)] = parseFloat(tier.prize_amount_usd) || 0;
+                  }
+                }
+
+                // Map entries directly from Packy on-site (weighted 0.5x for Keno & Upgrader, 1.0x for Packs & Battles)
+                const rawEntries = Array.isArray(activeBoard.entries) ? activeBoard.entries : [];
+                const players = rawEntries.map((entry: any, idx: number) => {
+                  const rank = Number(entry.rank || idx + 1);
+                  const rawName =
+                    entry.username ||
+                    (entry.user_id ? `pk_${entry.user_id.slice(0, 6)}` : `pk****${rank + 10}`);
+                  const maskedName =
+                    rawName.length > 4
+                      ? rawName.slice(0, 2) + "****" + rawName.slice(-2)
+                      : rawName + "****";
+
+                  const wagered = parseFloat(entry.total_wagered_usd) || 0;
+                  let prize = prizeMap[rank];
+                  if (prize === undefined) {
+                    if (rank === 1) prize = 50;
+                    else if (rank === 2) prize = 30;
+                    else if (rank === 3) prize = 20;
+                    else prize = 0;
+                  }
+
+                  return {
+                    rank,
+                    name: maskedName,
+                    wagered,
+                    prize,
+                    avatar: entry.image_url || null,
+                    userId: entry.user_id || null
+                  };
+                });
+
+                const totalWagered = players.reduce((sum: number, p: any) => sum + (p.wagered || 0), 0);
+
+                // Compute dynamic cache duration aligned with next_update_at (background refresh every 5 min)
+                if (activeBoard.next_update_at) {
+                  const nextMs = new Date(activeBoard.next_update_at).getTime();
+                  if (!isNaN(nextMs) && nextMs > now) {
+                    cacheTtlMs = Math.min(Math.max(nextMs - now + 3000, 30 * 1000), 5 * 60 * 1000);
+                  } else {
+                    cacheTtlMs = 60 * 1000;
+                  }
+                } else {
+                  cacheTtlMs = 60 * 1000;
+                }
+
+                cachedBoard = {
+                  ...fallbackPackyData,
+                  site: "packy",
+                  name: "packy.gg",
+                  title: activeBoard.title || "Packy.gg Leaderboard",
+                  pool: prizePool,
+                  endsAt,
+                  live: activeBoard.time_status === "active",
+                  weightedNote:
+                    "Hosted on-site (Endpoint 2) • Wagers weighted 0.5x for Keno & Upgrader • 1.0x for Packs & Battles",
+                  ngr: "25% NGR + $100 Leaderboard",
+                  trial: {
+                    ...fallbackPackyData.trial,
+                    totalWagered: Math.max(totalWagered, fallbackPackyData.trial.totalWagered)
+                  },
+                  players, // Real live players from Packy (empty array if none yet)
+                  source: "live-endpoint-2",
+                  lastRefreshedAt: activeBoard.last_refreshed_at || null,
+                  nextUpdateAt: activeBoard.next_update_at || null,
+                  leaderboardId: activeBoard.id || null,
+                  affiliateCodes: activeBoard.affiliate_codes || ["Max"]
+                };
+
+                lastFetchTime = now;
+                return res.json(cachedBoard);
               }
             }
-
-            // Map entries (wagers are weighted 0.5x for Keno & Upgrader on-site)
-            const rawEntries = Array.isArray(activeBoard.entries) ? activeBoard.entries : [];
-            const players = rawEntries.map((entry: any, idx: number) => {
-              const rank = Number(entry.rank || idx + 1);
-              const rawName =
-                entry.username ||
-                (entry.user_id ? `pk_${entry.user_id.slice(0, 6)}` : `pk****${rank + 10}`);
-              const maskedName =
-                rawName.length > 4
-                  ? rawName.slice(0, 2) + "****" + rawName.slice(-2)
-                  : rawName + "****";
-
-              const wagered = parseFloat(entry.total_wagered_usd) || 0;
-              let prize = prizeMap[rank];
-              if (prize === undefined) {
-                if (rank === 1) prize = 50;
-                else if (rank === 2) prize = 30;
-                else if (rank === 3) prize = 20;
-                else prize = 0;
-              }
-
-              return {
-                rank,
-                name: maskedName,
-                wagered,
-                prize,
-                avatar: entry.image_url || null,
-                userId: entry.user_id || null
-              };
-            });
-
-            const totalWagered = players.reduce((sum: number, p: any) => sum + (p.wagered || 0), 0);
-
-            // Compute dynamic cache duration aligned with next_update_at (background refresh every 5 min)
-            if (activeBoard.next_update_at) {
-              const nextMs = new Date(activeBoard.next_update_at).getTime();
-              if (!isNaN(nextMs) && nextMs > now) {
-                cacheTtlMs = Math.min(Math.max(nextMs - now + 3000, 30 * 1000), 5 * 60 * 1000);
-              } else {
-                cacheTtlMs = 60 * 1000;
-              }
-            } else {
-              cacheTtlMs = 60 * 1000;
-            }
-
-            cachedBoard = {
-              ...fallbackPackyData,
-              site: "packy",
-              name: "packy.gg",
-              title: activeBoard.title || "Packy.gg Leaderboard",
-              pool: prizePool,
-              endsAt,
-              live: activeBoard.time_status === "active",
-              weightedNote:
-                "Hosted on-site (Endpoint 2) • Wagers weighted 0.5x for Keno & Upgrader • 1.0x for Packs & Battles",
-              ngr: "25% NGR + $100 Leaderboard",
-              trial: {
-                ...fallbackPackyData.trial,
-                totalWagered: Math.max(totalWagered, fallbackPackyData.trial.totalWagered)
-              },
-              players: players.length > 0 ? players : fallbackPackyData.players,
-              source: "live-endpoint-2",
-              lastRefreshedAt: activeBoard.last_refreshed_at || null,
-              nextUpdateAt: activeBoard.next_update_at || null,
-              leaderboardId: activeBoard.id || null
-            };
-
-            lastFetchTime = now;
-            return res.json(cachedBoard);
           }
+        } else {
+          lastError = `HTTP ${response.status} from ${endpoint}`;
+          console.warn(`Packy Endpoint returned ${response.status} from ${endpoint}`);
         }
+      } catch (innerErr: any) {
+        lastError = innerErr?.message;
       }
-    } else {
-      console.warn(`Packy Endpoint 2 returned HTTP ${response.status}: ${response.statusText}`);
     }
-  } catch (err) {
+  } catch (err: any) {
+    lastError = err?.message;
     console.warn("Packy API Endpoint 2 fetch error, fallback engaged:", err);
   }
 
-  // Graceful fallback to cached board or trial data
+  // Graceful fallback indicating why live API was not reached
   cachedBoard = {
     ...fallbackPackyData,
-    source: "trial-sync"
+    source: "trial-sync",
+    apiStatus: "fallback_engaged",
+    apiError: lastError || "Could not reach Packy Endpoint 2"
   };
   lastFetchTime = now;
   return res.json(cachedBoard);
+});
+
+// Diagnostic debug endpoint: Call this to inspect exact response from Packy.gg
+app.get("/api/packy/debug", async (req: Request, res: Response) => {
+  const candidateEndpoints = [
+    `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
+    `${PACKY_BASE_URL}/api/v1/affiliate/leaderboard/external`,
+    `${PACKY_BASE_URL}/v1/affiliate/stats`
+  ];
+
+  const headers: Record<string, string> = {
+    "Accept": "application/json",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "X-API-Key": PACKY_API_KEY,
+    "x-api-key": PACKY_API_KEY,
+    "Authorization": `Bearer ${PACKY_API_KEY}`,
+    "api-key": PACKY_API_KEY
+  };
+
+  if (PACKY_CUSTOM_KEY) {
+    headers["x-custom-key"] = PACKY_CUSTOM_KEY;
+    headers["X-Custom-Key"] = PACKY_CUSTOM_KEY;
+  }
+
+  const results: any[] = [];
+
+  for (const endpoint of candidateEndpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers,
+        signal: AbortSignal.timeout(6000)
+      });
+      const text = await response.text();
+      let json = null;
+      try {
+        json = JSON.parse(text);
+      } catch {}
+
+      results.push({
+        endpoint,
+        status: response.status,
+        statusText: response.statusText,
+        response: json || text
+      });
+    } catch (err: any) {
+      results.push({
+        endpoint,
+        error: err.message
+      });
+    }
+  }
+
+  return res.json({
+    hasApiKey: !!PACKY_API_KEY,
+    apiKeyMasked: PACKY_API_KEY ? `${PACKY_API_KEY.slice(0, 6)}...${PACKY_API_KEY.slice(-4)}` : "empty",
+    hasCustomKey: !!PACKY_CUSTOM_KEY,
+    packyBaseUrl: PACKY_BASE_URL,
+    results
+  });
 });
 
 // Endpoint 1 — Affiliate Stats (from Packy.gg Creator Partner API)

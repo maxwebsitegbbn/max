@@ -1657,7 +1657,28 @@ export function Qd({ p: e, size: t = 40 }: { p: Player; size?: number }) {
 }
 
 export function Kd({ board: e, s: t }: { board: BoardData; s: SiteInfo }) {
-  const [n, r, l] = e.players,
+  const players = e.players || [];
+  if (players.length === 0) {
+    return (
+      <div className="podium rv" style={{ justifyContent: "center", padding: "30px 20px" }}>
+        <div style={{
+          background: "rgba(10, 22, 40, 0.7)",
+          border: "1px dashed rgba(0, 132, 255, 0.35)",
+          borderRadius: "16px",
+          padding: "24px 32px",
+          textAlign: "center",
+          maxWidth: "460px"
+        }}>
+          <h4 style={{ margin: "0 0 6px", color: "#fff", fontSize: "16px" }}>Leaderboard Race In Progress</h4>
+          <p style={{ margin: 0, color: "var(--mute)", fontSize: "13px", lineHeight: 1.5 }}>
+            Standings are synchronizing with {t.name} on-site via Endpoint 2. Wager under code <b>Max</b> to claim #1!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const [n, r, l] = players,
     i = (a: Player | undefined, s: number) =>
       a && (
         <div key={s} className={"seat p" + s}>
@@ -2518,8 +2539,12 @@ export function LeaderboardPage({ boards: e }: { boards: Record<string, BoardDat
                 );
               })
             ) : (
-              <div style={{ padding: "36px", textAlign: "center", color: "var(--mute)" }}>
-                No players found matching "<b>{searchQuery}</b>"
+              <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--mute)" }}>
+                {searchQuery ? (
+                  <>No players found matching "<b>{searchQuery}</b>"</>
+                ) : (
+                  <>No contenders recorded yet in this round. Standings update every 5 minutes!</>
+                )}
               </div>
             )}
           </div>
