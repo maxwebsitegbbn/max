@@ -27,17 +27,19 @@ let cacheTtlMs = 60 * 1000; // Refreshed dynamically based on next_update_at or 
 const fallbackPackyData = {
   site: "packy",
   name: "packy.gg",
+  title: "MAXS Leaderboard",
   pool: 100,
   ngr: "25% NGR + $100 Leaderboard",
   weightedNote: "Hosted on-site (Endpoint 2) • Wagers weighted 0.5x for Keno & Upgrader • 1.0x for Packs & Battles",
   rakeback: "0.5% instant rakeback on wager",
   lossback: "4%–10% weekly lossback funded by Packy",
+  affiliateCodes: ["MAXS"],
   trial: {
     targetTrial: 2000,
     targetRaise: 4000,
-    totalWagered: 0,
-    daysLeft: 10,
-    trialStatus: "Packy Leaderboard Race Active"
+    totalWagered: 815.41,
+    daysLeft: 4,
+    trialStatus: "MAXS Leaderboard Active"
   },
   vipTransfer: {
     depositBonus: "10% weekly deposit bonus",
@@ -46,10 +48,56 @@ const fallbackPackyData = {
     pokemonCardWager: 25000,
     pokemonCardNote: "At 25k wager: Random physical Pokémon card shipped to you (cards get better the more you wager!)"
   },
-  endsAt: Date.now() + 10 * 86400 * 1000 + 4 * 3600 * 1000,
+  endsAt: new Date("2026-11-07T01:00:00.000Z").getTime(),
   live: true,
-  players: [] as any[]
+  players: [
+    { rank: 1, name: "li****ly", wagered: 434.87, prize: 50, avatar: "https://avatars.steamstatic.com/a4427c1c1413c2c37051a580daaff94cc91da4aa_full.jpg" },
+    { rank: 2, name: "ma****er", wagered: 187.84, prize: 25, avatar: "https://ik.imagekit.io/scrkflpgw/avatars/avatar_kkbxehshxysggycyhhfyxnffeyxlykiq_SJFCvId9p.jpg" },
+    { rank: 3, name: "em****ys", wagered: 101.40, prize: 15, avatar: null },
+    { rank: 4, name: "mr****ky", wagered: 55.77, prize: 5, avatar: "https://cdn.discordapp.com/avatars/775416292194517063/d2748b40027aabd531f58d9c58fad5e0.png" },
+    { rank: 5, name: "mu****zy", wagered: 18.22, prize: 5, avatar: "https://cdn.discordapp.com/avatars/689500108844564553/a_14a37124a2a267657fc9332bf483a0d3.png" },
+    { rank: 6, name: "re****st", wagered: 14.35, prize: 0, avatar: "https://avatars.steamstatic.com/553e1f6d00620f054200e47a104dfb318747b2c7_full.jpg" },
+    { rank: 7, name: "ra****es", wagered: 2.96, prize: 0, avatar: "https://ik.imagekit.io/scrkflpgw/avatars/avatar_BanTrSKDzulj8XTG3ToFEX5A507TZ3bS_hFMVf3y2Y.jpg" },
+    { rank: 8, name: "xo****ls", wagered: 0.00, prize: 0, avatar: null }
+  ]
 };
+
+// Helper to build request variations for Cloudflare bypass & candidate hostnames
+function getCandidateRequests() {
+  const primaryHeaders: Record<string, string> = {
+    "User-Agent": "curl/8.4.0",
+    "Accept": "*/*",
+    "X-API-Key": PACKY_API_KEY,
+    "x-api-key": PACKY_API_KEY
+  };
+  if (PACKY_CUSTOM_KEY) {
+    primaryHeaders["x-custom-key"] = PACKY_CUSTOM_KEY;
+    primaryHeaders["X-Custom-Key"] = PACKY_CUSTOM_KEY;
+  }
+
+  const requests: Array<{ url: string; headers: Record<string, string>; label: string }> = [
+    // 1. EXACT working curl configuration
+    {
+      url: `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
+      headers: primaryHeaders,
+      label: "curl with X-API-Key and x-custom-key"
+    },
+    // 2. Fallback with json accept header
+    {
+      url: `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
+      headers: { ...primaryHeaders, "Accept": "application/json" },
+      label: "curl with application/json"
+    },
+    // 3. API subdomain
+    {
+      url: "https://api.packy.gg/v1/affiliate/leaderboard/external",
+      headers: primaryHeaders,
+      label: "api.packy.gg with curl"
+    }
+  ];
+
+  return requests;
+}
 
 // Endpoint 2 — Leaderboards (from Packy.gg Creator Partner API)
 // GET /v1/affiliate/leaderboard/external
@@ -62,31 +110,14 @@ app.get("/api/packy/leaderboard", async (req: Request, res: Response) => {
   let lastError: any = null;
 
   try {
-    const candidateEndpoints = [
-      `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
-      `${PACKY_BASE_URL}/api/v1/affiliate/leaderboard/external`
-    ];
+    const candidateRequests = getCandidateRequests();
 
-    const headers: Record<string, string> = {
-      "Accept": "application/json",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      "X-API-Key": PACKY_API_KEY,
-      "x-api-key": PACKY_API_KEY,
-      "Authorization": `Bearer ${PACKY_API_KEY}`,
-      "api-key": PACKY_API_KEY
-    };
-
-    if (PACKY_CUSTOM_KEY) {
-      headers["x-custom-key"] = PACKY_CUSTOM_KEY;
-      headers["X-Custom-Key"] = PACKY_CUSTOM_KEY;
-    }
-
-    for (const endpoint of candidateEndpoints) {
+    for (const item of candidateRequests) {
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(item.url, {
           method: "GET",
-          headers,
-          signal: AbortSignal.timeout(6500)
+          headers: item.headers,
+          signal: AbortSignal.timeout(4500)
         });
 
         if (response.ok) {
@@ -200,8 +231,9 @@ app.get("/api/packy/leaderboard", async (req: Request, res: Response) => {
                     ...fallbackPackyData.trial,
                     totalWagered: Math.max(totalWagered, fallbackPackyData.trial.totalWagered)
                   },
-                  players, // Real live players from Packy (empty array if none yet)
+                  players,
                   source: "live-endpoint-2",
+                  successfulUrl: item.url,
                   lastRefreshedAt: activeBoard.last_refreshed_at || null,
                   nextUpdateAt: activeBoard.next_update_at || null,
                   leaderboardId: activeBoard.id || null,
@@ -214,8 +246,7 @@ app.get("/api/packy/leaderboard", async (req: Request, res: Response) => {
             }
           }
         } else {
-          lastError = `HTTP ${response.status} from ${endpoint}`;
-          console.warn(`Packy Endpoint returned ${response.status} from ${endpoint}`);
+          lastError = `HTTP ${response.status} from ${item.url}`;
         }
       } catch (innerErr: any) {
         lastError = innerErr?.message;
@@ -231,58 +262,44 @@ app.get("/api/packy/leaderboard", async (req: Request, res: Response) => {
     ...fallbackPackyData,
     source: "trial-sync",
     apiStatus: "fallback_engaged",
-    apiError: lastError || "Could not reach Packy Endpoint 2"
+    apiError: lastError || "Cloudflare 403 or unreachable on tested endpoints"
   };
   lastFetchTime = now;
   return res.json(cachedBoard);
 });
 
-// Diagnostic debug endpoint: Call this to inspect exact response from Packy.gg
+// Diagnostic debug endpoint: Call this to inspect exact responses across subdomains & headers
 app.get("/api/packy/debug", async (req: Request, res: Response) => {
-  const candidateEndpoints = [
-    `${PACKY_BASE_URL}/v1/affiliate/leaderboard/external`,
-    `${PACKY_BASE_URL}/api/v1/affiliate/leaderboard/external`,
-    `${PACKY_BASE_URL}/v1/affiliate/stats`
-  ];
-
-  const headers: Record<string, string> = {
-    "Accept": "application/json",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    "X-API-Key": PACKY_API_KEY,
-    "x-api-key": PACKY_API_KEY,
-    "Authorization": `Bearer ${PACKY_API_KEY}`,
-    "api-key": PACKY_API_KEY
-  };
-
-  if (PACKY_CUSTOM_KEY) {
-    headers["x-custom-key"] = PACKY_CUSTOM_KEY;
-    headers["X-Custom-Key"] = PACKY_CUSTOM_KEY;
-  }
-
+  const candidateRequests = getCandidateRequests().slice(0, 8); // Test top candidates
   const results: any[] = [];
 
-  for (const endpoint of candidateEndpoints) {
+  for (const item of candidateRequests) {
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(item.url, {
         method: "GET",
-        headers,
-        signal: AbortSignal.timeout(6000)
+        headers: item.headers,
+        signal: AbortSignal.timeout(4500)
       });
+      const contentType = response.headers.get("content-type") || "";
       const text = await response.text();
+      let isCloudflare = text.includes("Just a moment...") || text.includes("challenges.cloudflare.com");
       let json = null;
       try {
         json = JSON.parse(text);
       } catch {}
 
       results.push({
-        endpoint,
+        url: item.url,
+        ua: item.headers["User-Agent"],
         status: response.status,
         statusText: response.statusText,
-        response: json || text
+        contentType,
+        isCloudflareChallenge: isCloudflare,
+        preview: json || (isCloudflare ? "Cloudflare 'Just a moment...' Challenge intercepted" : text.slice(0, 300))
       });
     } catch (err: any) {
       results.push({
-        endpoint,
+        url: item.url,
         error: err.message
       });
     }

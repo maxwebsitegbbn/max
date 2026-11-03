@@ -14,12 +14,12 @@ import { AssetSyncModal, PackArt } from './components/CardArt';
 export const I = {
   name: "MAX",
   handle: "MAXdegens",
-  code: "Max",
+  code: "MAXS",
   kick: "https://kick.com/MAXdegens",
   x: "https://x.com/MAX_Degens",
   xHandle: "@MAX_Degens",
   discord: "https://discord.gg/8qF2S3YzeP",
-  packy: "https://packy.gg/?r=Max",
+  packy: "https://packy.gg/?r=MAXS",
   tagline: "Official Community Hub for packy.gg",
   followers: "2,000+"
 };
@@ -41,7 +41,7 @@ export const Be: Record<string, SiteInfo> = {
   packy: {
     key: "packy",
     name: "packy.gg",
-    url: "https://packy.gg/?r=Max",
+    url: "https://packy.gg/?r=MAXS",
     logo: "/img/image-8.png",
     accent: "#0084FF",
     accentInk: "#00142B",
@@ -209,7 +209,7 @@ export const packyBoard: BoardData = {
   site: "packy",
   name: "packy.gg",
   pool: 100,
-  endsAt: Date.now() + 10 * 86400 * 1000 + 4 * 3600 * 1000,
+  endsAt: new Date("2026-11-07T01:00:00.000Z").getTime(),
   live: true,
   weightedNote: "Hosted on-site (Endpoint 2) • Wagers weighted 0.5x for Keno & Upgrader • 1.0x for Packs & Battles",
   ngr: "25% NGR + $100 Leaderboard funded by Packy",
@@ -221,21 +221,14 @@ export const packyBoard: BoardData = {
     pokemonCardNote: "At 25k wager: Random authentic Pokémon card shipped to you (cards get better the more you wager!)"
   },
   players: [
-    { rank: 1, name: "Ch****99", wagered: 940.50, prize: 50, avatar: null },
-    { rank: 2, name: "Pk****77", wagered: 520.10, prize: 30, avatar: null },
-    { rank: 3, name: "Lu****X1", wagered: 245.80, prize: 20, avatar: null },
-    { rank: 4, name: "Ge****bz", wagered: 138.80, prize: 0, avatar: null },
-    { rank: 5, name: "As****01", wagered: 92.50, prize: 0, avatar: null },
-    { rank: 6, name: "Ry****gg", wagered: 64.20, prize: 0, avatar: null },
-    { rank: 7, name: "Bl****pk", wagered: 45.00, prize: 0, avatar: null },
-    { rank: 8, name: "Ve****08", wagered: 32.50, prize: 0, avatar: null },
-    { rank: 9, name: "Sn****22", wagered: 24.00, prize: 0, avatar: null },
-    { rank: 10, name: "Pi****55", wagered: 18.00, prize: 0, avatar: null },
-    { rank: 11, name: "Me****90", wagered: 14.50, prize: 0, avatar: null },
-    { rank: 12, name: "Dr****33", wagered: 11.20, prize: 0, avatar: null },
-    { rank: 13, name: "To****10", wagered: 8.40, prize: 0, avatar: null },
-    { rank: 14, name: "Ka****64", wagered: 6.00, prize: 0, avatar: null },
-    { rank: 15, name: "Um****07", wagered: 4.80, prize: 0, avatar: null }
+    { rank: 1, name: "li****ly", wagered: 434.87, prize: 50, avatar: "https://avatars.steamstatic.com/a4427c1c1413c2c37051a580daaff94cc91da4aa_full.jpg" },
+    { rank: 2, name: "ma****er", wagered: 187.84, prize: 25, avatar: "https://ik.imagekit.io/scrkflpgw/avatars/avatar_kkbxehshxysggycyhhfyxnffeyxlykiq_SJFCvId9p.jpg" },
+    { rank: 3, name: "em****ys", wagered: 101.40, prize: 15, avatar: null },
+    { rank: 4, name: "mr****ky", wagered: 55.77, prize: 5, avatar: "https://cdn.discordapp.com/avatars/775416292194517063/d2748b40027aabd531f58d9c58fad5e0.png" },
+    { rank: 5, name: "mu****zy", wagered: 18.22, prize: 5, avatar: "https://cdn.discordapp.com/avatars/689500108844564553/a_14a37124a2a267657fc9332bf483a0d3.png" },
+    { rank: 6, name: "re****st", wagered: 14.35, prize: 0, avatar: "https://avatars.steamstatic.com/553e1f6d00620f054200e47a104dfb318747b2c7_full.jpg" },
+    { rank: 7, name: "ra****es", wagered: 2.96, prize: 0, avatar: "https://ik.imagekit.io/scrkflpgw/avatars/avatar_BanTrSKDzulj8XTG3ToFEX5A507TZ3bS_hFMVf3y2Y.jpg" },
+    { rank: 8, name: "xo****ls", wagered: 0.00, prize: 0, avatar: null }
   ]
 };
 
