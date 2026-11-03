@@ -1,0 +1,136 @@
+<svg viewBox="0 0 450 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Vignette -->
+    <radialGradient id="limboBg" cx="50%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#460014" />
+      <stop offset="45%" stop-color="#24000A" />
+      <stop offset="85%" stop-color="#0E0004" />
+      <stop offset="100%" stop-color="#050002" />
+    </radialGradient>
+
+    <!-- Upper 200X Glass Slab Gradient -->
+    <linearGradient id="glass200" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2453" stop-opacity="0.38" />
+      <stop offset="40%" stop-color="#80001B" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#3D000C" stop-opacity="0.85" />
+    </linearGradient>
+
+    <!-- Lower 1500X Glass Slab Gradient -->
+    <linearGradient id="glass1500" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA8BA" stop-opacity="0.45" />
+      <stop offset="25%" stop-color="#FF1A4B" stop-opacity="0.35" />
+      <stop offset="70%" stop-color="#8A001F" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#38000C" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Specular Glass Rim Gradients -->
+    <linearGradient id="rimGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#FF99B0" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FF2453" stop-opacity="0.4" />
+    </linearGradient>
+
+    <filter id="glassDrop" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000000" flood-opacity="0.9" />
+      <feDropShadow dx="0" dy="4" stdDeviation="16" flood-color="#FF0033" flood-opacity="0.35" />
+    </filter>
+
+    <filter id="textDepth" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+  </defs>
+
+  <!-- Card Backdrop -->
+  <rect width="450" height="600" rx="28" fill="url(#limboBg)" />
+  <rect width="450" height="600" rx="28" stroke="#FF1E46" stroke-width="1.8" stroke-opacity="0.3" />
+
+  <!-- Ambient Wave Ribbons in Background -->
+  <path d="M-80 180 C80 90 320 220 520 120" stroke="#FF1A4B" stroke-width="50" stroke-opacity="0.12" filter="blur(25px)" />
+  <path d="M-80 340 C120 230 360 380 520 270" stroke="#FF3366" stroke-width="70" stroke-opacity="0.15" filter="blur(35px)" />
+
+  <!-- ==================== UPPER SLAB (200X) ==================== -->
+  <g transform="translate(10, 10)" filter="url(#glassDrop)">
+    <!-- Slab Shape Curved -->
+    <path d="M 50 80
+             C 140 35, 220 30, 260 70
+             L 245 155
+             C 195 125, 120 125, 30 165
+             Z"
+          fill="url(#glass200)"
+          stroke="url(#rimGlow)"
+          stroke-width="3" />
+
+    <!-- Top Rim Specular Glint -->
+    <path d="M 55 80 C 140 38, 220 34, 255 70" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+
+    <!-- 200X White 3D Text -->
+    <text x="145" y="115"
+          font-family="'Unbounded', 'Outfit', sans-serif"
+          font-weight="900"
+          font-size="44"
+          fill="#FFFFFF"
+          text-anchor="middle"
+          filter="url(#textDepth)"
+          letter-spacing="0.02em"
+          transform="rotate(-8 145 115)">200X</text>
+  </g>
+
+  <!-- ==================== MAIN CENTER SLAB (1500X) ==================== -->
+  <g transform="translate(10, 135)" filter="url(#glassDrop)">
+    <!-- 3D Curved Thick Slab Body -->
+    <path d="M 60 45
+             C 170 10, 330 15, 410 70
+             L 390 205
+             C 310 145, 150 145, 30 200
+             Z"
+          fill="url(#glass1500)"
+          stroke="url(#rimGlow)"
+          stroke-width="3.5" />
+
+    <!-- Inner Thickness Line -->
+    <path d="M 64 50
+             C 170 18, 325 22, 402 72"
+          stroke="#FFFFFF"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          opacity="0.95" />
+
+    <!-- Subtle Glass Refraction Reflection -->
+    <path d="M 45 190 C 160 140, 300 140, 380 195" stroke="#FFA3B5" stroke-width="1.8" stroke-linecap="round" opacity="0.5" />
+
+    <!-- 1500X Bold 3D Text -->
+    <text x="215" y="138"
+          font-family="'Unbounded', 'Outfit', sans-serif"
+          font-weight="900"
+          font-size="64"
+          fill="#FFFFFF"
+          text-anchor="middle"
+          filter="url(#textDepth)"
+          letter-spacing="0.02em"
+          transform="rotate(-5 215 138)">1500X</text>
+  </g>
+
+  <!-- ==================== BOTTOM TYPOGRAPHY ==================== -->
+  <!-- "LIMBO" Primary Title -->
+  <text x="225" y="480"
+        font-family="'Unbounded', 'Outfit', sans-serif"
+        font-weight="900"
+        font-size="54"
+        fill="#FFFFFF"
+        text-anchor="middle"
+        letter-spacing="0.1em">LIMBO</text>
+
+  <!-- "BETZONE ORIGINALS" Subtitle -->
+  <text x="225" y="525"
+        font-family="'Unbounded', 'Outfit', sans-serif"
+        font-weight="800"
+        font-size="14.5"
+        fill="#FFFFFF"
+        text-anchor="middle"
+        letter-spacing="0.18em">
+    <tspan fill="#FF1A4B">BETZONE</tspan> ORIGINALS
+  </text>
+
+  <!-- Bottom Bright Center Flare -->
+  <ellipse cx="225" cy="590" rx="140" ry="12" fill="#FF1A4B" opacity="0.75" filter="blur(14px)" />
+</svg>

@@ -1,0 +1,151 @@
+<svg viewBox="0 0 450 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Vignette -->
+    <radialGradient id="minesBg" cx="50%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#460014" />
+      <stop offset="45%" stop-color="#24000A" />
+      <stop offset="85%" stop-color="#0E0004" />
+      <stop offset="100%" stop-color="#050002" />
+    </radialGradient>
+
+    <!-- Bomb Body 3D Radial Sphere -->
+    <radialGradient id="bombSphere" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#5A526B" />
+      <stop offset="25%" stop-color="#251E33" />
+      <stop offset="65%" stop-color="#100B1A" />
+      <stop offset="100%" stop-color="#05020A" />
+    </radialGradient>
+
+    <!-- Diamond Facet Gradients (Ruby Red 3D) -->
+    <linearGradient id="diaTopFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#FFA8BA" />
+      <stop offset="100%" stop-color="#FF2453" />
+    </linearGradient>
+
+    <linearGradient id="diaFacetL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3864" />
+      <stop offset="100%" stop-color="#B80026" />
+    </linearGradient>
+
+    <linearGradient id="diaFacetC" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF5C82" />
+      <stop offset="60%" stop-color="#D6002C" />
+      <stop offset="100%" stop-color="#730016" />
+    </linearGradient>
+
+    <linearGradient id="diaFacetR" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF3864" />
+      <stop offset="100%" stop-color="#99001F" />
+    </linearGradient>
+
+    <!-- Spark Fire Flare -->
+    <radialGradient id="sparkCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="25%" stop-color="#FFF066" />
+      <stop offset="60%" stop-color="#FF6B00" />
+      <stop offset="100%" stop-color="#FF0033" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="objectShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#000000" flood-opacity="0.95" />
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#FF0033" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Card Backdrop -->
+  <rect width="450" height="600" rx="28" fill="url(#minesBg)" />
+  <rect width="450" height="600" rx="28" stroke="#FF1E46" stroke-width="1.8" stroke-opacity="0.3" />
+
+  <!-- Background Dim Floating Tiles / Cards -->
+  <g opacity="0.12" transform="translate(45, 60)">
+    <rect x="20" y="20" width="110" height="150" rx="16" fill="#FF1A4B" transform="rotate(-15 75 95)" />
+    <rect x="230" y="30" width="110" height="150" rx="16" fill="#FF1A4B" transform="rotate(20 285 105)" />
+  </g>
+
+  <!-- Left Flanking Ruby Diamond -->
+  <g transform="translate(60, 160) rotate(-22) scale(0.85)" filter="url(#objectShadow)">
+    <polygon points="90,15 155,55 25,55" fill="url(#diaTopFace)" stroke="#FFF" stroke-width="1.5" />
+    <polygon points="25,55 90,55 90,140" fill="url(#diaFacetL)" stroke="#FFF" stroke-width="1.5" />
+    <polygon points="90,55 155,55 90,140" fill="url(#diaFacetR)" stroke="#FFF" stroke-width="1.5" />
+  </g>
+
+  <!-- Right Flanking Ruby Diamond -->
+  <g transform="translate(260, 160) rotate(22) scale(0.85)" filter="url(#objectShadow)">
+    <polygon points="90,15 155,55 25,55" fill="url(#diaTopFace)" stroke="#FFF" stroke-width="1.5" />
+    <polygon points="25,55 90,55 90,140" fill="url(#diaFacetL)" stroke="#FFF" stroke-width="1.5" />
+    <polygon points="90,55 155,55 90,140" fill="url(#diaFacetR)" stroke="#FFF" stroke-width="1.5" />
+  </g>
+
+  <!-- ==================== 3D BOMB IN CENTER ==================== -->
+  <g filter="url(#objectShadow)">
+    <!-- Bomb Sphere -->
+    <circle cx="225" cy="200" r="88" fill="url(#bombSphere)" stroke="#221A30" stroke-width="2.5" />
+    
+    <!-- Specular Highlight Spot -->
+    <ellipse cx="195" cy="165" rx="28" ry="16" fill="#FFFFFF" opacity="0.3" transform="rotate(-35 195 165)" />
+
+    <!-- Bomb Neck/Collar (Machined Metal) -->
+    <rect x="206" y="96" width="38" height="22" rx="4" fill="#6B7285" stroke="#363A47" stroke-width="2" />
+    <line x1="206" y1="103" x2="244" y2="103" stroke="#8E99B3" stroke-width="2.5" />
+    <line x1="206" y1="111" x2="244" y2="111" stroke="#8E99B3" stroke-width="2.5" />
+
+    <!-- Curled Rope Fuse -->
+    <path d="M 225 96
+             C 225 60, 275 70, 280 40
+             C 285 20, 310 30, 315 45"
+          fill="none"
+          stroke="#D8BE9A"
+          stroke-width="9"
+          stroke-linecap="round" />
+
+    <!-- Bright Fiery Sparking Fuse Tip -->
+    <circle cx="315" cy="45" r="42" fill="url(#sparkCore)" />
+    <!-- Center Hot White Core -->
+    <circle cx="315" cy="45" r="10" fill="#FFFFFF" />
+    <!-- Starburst Rays -->
+    <polygon points="315,20 321,38 340,45 321,52 315,70 309,52 290,45 309,38" fill="#FFFFFF" />
+    <polygon points="315,28 319,41 332,45 319,49 315,62 311,49 298,45 311,41" fill="#FFF499" />
+  </g>
+
+  <!-- ==================== PROMINENT FOREGROUND RUBY ==================== -->
+  <g transform="translate(105, 220) scale(1.35)" filter="url(#objectShadow)">
+    <!-- Top Table Facets -->
+    <polygon points="90,10 155,42 25,42" fill="url(#diaTopFace)" stroke="#FFFFFF" stroke-width="2" />
+    <polygon points="90,10 125,42 55,42" fill="#FFFFFF" opacity="0.45" />
+
+    <!-- Pavilion / Lower Facets -->
+    <polygon points="25,42 155,42 90,120" fill="url(#diaFacetC)" stroke="#FFFFFF" stroke-width="2" />
+    <polygon points="25,42 60,42 90,120" fill="url(#diaFacetL)" stroke="#FF859F" stroke-width="1.2" />
+    <polygon points="60,42 120,42 90,120" fill="url(#diaFacetC)" />
+    <polygon points="120,42 155,42 90,120" fill="url(#diaFacetR)" stroke="#FF859F" stroke-width="1.2" />
+
+    <!-- Glint / Sparkle on Point of Diamond -->
+    <circle cx="90" cy="42" r="5" fill="#FFFFFF" filter="blur(1px)" />
+    <polygon points="90,32 92,39 100,42 92,45 90,52 88,45 80,42 88,39" fill="#FFFFFF" />
+  </g>
+
+  <!-- ==================== BOTTOM TYPOGRAPHY ==================== -->
+  <!-- "MINES" Primary Title -->
+  <text x="225" y="480"
+        font-family="'Unbounded', 'Outfit', sans-serif"
+        font-weight="900"
+        font-size="54"
+        fill="#FFFFFF"
+        text-anchor="middle"
+        letter-spacing="0.1em">MINES</text>
+
+  <!-- "BETZONE ORIGINALS" Subtitle -->
+  <text x="225" y="525"
+        font-family="'Unbounded', 'Outfit', sans-serif"
+        font-weight="800"
+        font-size="14.5"
+        fill="#FFFFFF"
+        text-anchor="middle"
+        letter-spacing="0.18em">
+    <tspan fill="#FF1A4B">BETZONE</tspan> ORIGINALS
+  </text>
+
+  <!-- Bottom Bright Center Flare -->
+  <ellipse cx="225" cy="590" rx="140" ry="12" fill="#FF1A4B" opacity="0.75" filter="blur(14px)" />
+</svg>

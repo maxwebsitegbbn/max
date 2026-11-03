@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" fill="none">
+  <defs>
+    <linearGradient id="upbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081836" />
+      <stop offset="100%" stop-color="#002D62" />
+    </linearGradient>
+    <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="260" rx="18" fill="url(#upbg)" stroke="#00A3FF" stroke-width="2" />
+  
+  <!-- Upgrader Wheel -->
+  <g transform="translate(100, 115)">
+    <!-- Outer Ring -->
+    <circle cx="0" cy="0" r="70" fill="none" stroke="#003366" stroke-width="12" />
+    <!-- Winning segments -->
+    <circle cx="0" cy="0" r="70" fill="none" stroke="url(#wheelGrad)" stroke-width="12" stroke-dasharray="140 300" stroke-linecap="round" />
+    <!-- Center Needle / Multiplier -->
+    <circle cx="0" cy="0" r="38" fill="#001833" stroke="#00F0FF" stroke-width="3" />
+    <text x="0" y="8" font-family="system-ui, sans-serif" font-weight="900" font-size="22" fill="#00F0FF" text-anchor="middle">5.0x</text>
+    <!-- Arrow pointer -->
+    <polygon points="0,-45 -8,-58 8,-58" fill="#00F0FF" />
+  </g>
+
+  <!-- Game Label & 0.5x Weight Tag -->
+  <text x="100" y="210" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">UPGRADER</text>
+  <rect x="52" y="222" width="96" height="22" rx="11" fill="rgba(0, 163, 255, 0.2)" stroke="#00A3FF" stroke-width="1" />
+  <text x="100" y="237" font-family="system-ui, sans-serif" font-weight="800" font-size="11" fill="#00F0FF" text-anchor="middle">0.5x WEIGHTED</text>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" fill="none">
+  <defs>
+    <linearGradient id="pbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140836" />
+      <stop offset="50%" stop-color="#1E1052" />
+      <stop offset="100%" stop-color="#09031C" />
+    </linearGradient>
+    <linearGradient id="pcard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="40%" stop-color="#FF9900" />
+      <stop offset="100%" stop-color="#FF2A55" />
+    </linearGradient>
+    <linearGradient id="foil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#8B3DFF" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="260" rx="18" fill="url(#pbg)" stroke="#8B3DFF" stroke-width="2" />
+  
+  <!-- Pokémon Pack Foil Wrapper -->
+  <g transform="translate(30, 24)">
+    <rect x="0" y="0" width="140" height="212" rx="14" fill="url(#pcard)" />
+    <!-- Foil Sheen Lines -->
+    <path d="M 0 30 L 140 70 L 140 100 L 0 60 Z" fill="#FFFFFF" opacity="0.3" />
+    <path d="M 0 120 L 140 160 L 140 175 L 0 135 Z" fill="#FFFFFF" opacity="0.2" />
+    <!-- Pack Seal Crimps -->
+    <rect x="0" y="0" width="140" height="16" fill="#CC6600" opacity="0.7" />
+    <rect x="0" y="196" width="140" height="16" fill="#CC6600" opacity="0.7" />
+    <!-- Pokéball Emblem -->
+    <circle cx="70" cy="106" r="34" fill="#FFFFFF" stroke="#110826" stroke-width="6" />
+    <path d="M 38 106 A 32 32 0 0 1 102 106 Z" fill="#EE1515" />
+    <line x1="38" y1="106" x2="102" y2="106" stroke="#110826" stroke-width="6" />
+    <circle cx="70" cy="106" r="10" fill="#FFFFFF" stroke="#110826" stroke-width="4" />
+    <circle cx="70" cy="106" r="4" fill="#110826" />
+    <!-- Text -->
+    <text x="70" y="172" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">MYSTERY PACK</text>
+  </g>
+</svg>

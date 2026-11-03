@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="c2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8559E3" />
+      <stop offset="100%" stop-color="#4F1EA0" />
+    </linearGradient>
+    <linearGradient id="purpleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#12AAFF" />
+      <stop offset="100%" stop-color="#8559E3" />
+    </linearGradient>
+  </defs>
+  <!-- Background glow -->
+  <rect x="15" y="15" width="210" height="210" rx="36" fill="#130B24" stroke="url(#purpleGlow)" stroke-width="3" />
+  
+  <!-- Case Container Body -->
+  <path d="M 45 90 L 120 50 L 195 90 L 195 165 L 120 205 L 45 165 Z" fill="url(#c2Grad)" stroke="#12AAFF" stroke-width="2.5" />
+  <!-- Top Flap -->
+  <path d="M 45 90 L 120 130 L 195 90 L 120 50 Z" fill="#9D72FF" opacity="0.8" />
+  <!-- Center Divide -->
+  <path d="M 120 130 L 120 205" stroke="#12AAFF" stroke-width="3" />
+  
+  <!-- Center Star/Degen Symbol -->
+  <circle cx="120" cy="120" r="26" fill="#130B24" stroke="#12AAFF" stroke-width="2.5" />
+  <path d="M 120 106 L 124 116 L 134 118 L 126 125 L 128 135 L 120 130 L 112 135 L 114 125 L 106 118 L 116 116 Z" fill="#12AAFF" />
+
+  <!-- Badge: FREE CASE #2 -->
+  <rect x="50" y="176" width="140" height="28" rx="8" fill="#12AAFF" />
+  <text x="120" y="195" font-family="system-ui, sans-serif" font-weight="900" font-size="13" fill="#0A1118" text-anchor="middle" letter-spacing="0.04em">FREE CASE #2</text>
+</svg>

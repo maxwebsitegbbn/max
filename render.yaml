@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: max-leaderboard
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PACKY_BASE_URL
+        value: https://packy.gg
+      - key: PACKY_API_KEY
+        sync: false
+      - key: PACKY_CUSTOM_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
